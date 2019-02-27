@@ -1,0 +1,251 @@
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using SharpGalileo.models;
+using System;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
+using System.Text;
+using static SharpGalileo.GalileoDelegates;
+
+namespace SharpGalileo
+{
+    public class GalileoSDK : IDisposable
+    {
+        private IntPtr instance;
+        private bool _disposed = false;
+
+        public GalileoSDK()
+        {
+            instance = GalileoFunctions.CreateInstance();
+        }
+        
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (_disposed)
+                return;
+
+            if (instance != null)
+                GalileoFunctions.ReleaseInstance(instance);
+
+            _disposed = true;
+        }
+
+        public GALILEO_RETURN_CODE Connect(String targetID, bool autoConnect, int timeout, Action<GALILEO_RETURN_CODE, String> onConnect = null, Action<GALILEO_RETURN_CODE, String> onDisconnect = null)
+        {
+            byte[] targetIDBytes = Encoding.ASCII.GetBytes(targetID);
+            OnConnectDelegate onConnectCB = null;
+            OnDisconnectDelegate onDisconnectCB = null;
+            if (onConnect != null)
+            {
+                onConnectCB = (status, id, length) =>
+                {
+                    byte[] result = new byte[length];
+                    Marshal.Copy(id, result, 0, length);
+                    onConnect?.Invoke(status, Encoding.ASCII.GetString(result, 0, length));
+                };
+            }
+            if(onDisconnect != null)
+            {
+                onDisconnectCB = (status, id, length) =>
+                {
+                    byte[] result = new byte[length];
+                    Marshal.Copy(id, result, 0, length);
+                    onDisconnect?.Invoke(status, Encoding.ASCII.GetString(result, 0, length));
+                };
+            }
+            return GalileoFunctions.Connect(instance, Encoding.ASCII.GetBytes(targetID), targetIDBytes.Length, autoConnect, timeout, onConnectCB, onDisconnectCB);
+        }
+
+        public List<ServerInfo> GetServersOnline()
+        {
+            byte[] servers = new byte[1024 * 1024];
+            long length = 0;
+            GalileoFunctions.GetServersOnline(instance, servers, ref length);
+            string serversJsonString = Encoding.UTF8.GetString(servers, 0, (int)length);
+            JArray serversJson = JArray.Parse(serversJsonString);
+            List<ServerInfo> serversObj = new List<ServerInfo>(); ;
+            foreach (var server in serversJson)
+            {
+                serversObj.Add(server.ToObject<ServerInfo>());
+            }
+            return serversObj;
+        }
+
+
+        public ServerInfo GetCurrentServer()
+        {
+            byte[] currentServer = new byte[1024 * 1024];
+            long length = 0;
+            GalileoFunctions.GetCurrentServer(instance, currentServer, ref length);
+            string currentServerJsonString = Encoding.UTF8.GetString(currentServer, 0, (int)length);
+            return JsonConvert.DeserializeObject<ServerInfo>(currentServerJsonString);
+        }
+
+        public GALILEO_RETURN_CODE PublishTest()
+        {
+            return GalileoFunctions.PublishTest(instance);
+        }
+
+        public GALILEO_RETURN_CODE SendCMD(byte[] data)
+        {
+            return GalileoFunctions.SendCMD(instance, data, data.Length);
+        }
+
+        public GALILEO_RETURN_CODE StartNav()
+        {
+            return GalileoFunctions.StartNav(instance);
+        }
+
+        public GALILEO_RETURN_CODE StopNav()
+        {
+            return GalileoFunctions.StopNav(instance);
+        }
+
+        public GALILEO_RETURN_CODE SetGoal(int goalIndex)
+        {
+            return GalileoFunctions.SetGoal(instance, goalIndex);
+        }
+
+        public GALILEO_RETURN_CODE PauseGoal()
+        {
+            return GalileoFunctions.PauseGoal(instance);
+        }
+
+        public GALILEO_RETURN_CODE ResumeGoal()
+        {
+            return GalileoFunctions.ResumeGoal(instance);
+        }
+
+        public GALILEO_RETURN_CODE CancelGoal()
+        {
+            return GalileoFunctions.CancelGoal(instance);
+        }
+
+        public GALILEO_RETURN_CODE InsertGoal(float x, float y)
+        {
+            return GalileoFunctions.InsertGoal(instance, x, y);
+        }
+
+        public GALILEO_RETURN_CODE ResetGoal()
+        {
+            return GalileoFunctions.ResetGoal(instance);
+        }
+
+        public GALILEO_RETURN_CODE SetSpeed(float vLinear, float xAngle)
+        {
+            return GalileoFunctions.SetSpeed(instance, vLinear, xAngle);
+        }
+
+        public GALILEO_RETURN_CODE Shutdown()
+        {
+            return GalileoFunctions.Shutdown(instance);
+        }
+
+        public GALILEO_RETURN_CODE SetAngle(byte sign, byte angle)
+        {
+            return GalileoFunctions.SetAngle(instance, sign, angle);
+        }
+
+        public GALILEO_RETURN_CODE StartLoop()
+        {
+            return GalileoFunctions.StartLoop(instance);
+        }
+
+        public GALILEO_RETURN_CODE StopLoop()
+        {
+            return GalileoFunctions.StopLoop(instance);
+        }
+
+        public GALILEO_RETURN_CODE SetLoopWaitTime(byte time)
+        {
+            return GalileoFunctions.SetLoopWaitTime(instance, time);
+        }
+
+        public GALILEO_RETURN_CODE StartMapping()
+        {
+            return GalileoFunctions.StartMapping(instance);
+        }
+
+        public GALILEO_RETURN_CODE StopMapping()
+        {
+            return GalileoFunctions.StopMapping(instance);
+        }
+
+        public GALILEO_RETURN_CODE SaveMap()
+        {
+            return GalileoFunctions.SaveMap(instance);
+        }
+
+        public GALILEO_RETURN_CODE UpdateMap()
+        {
+            return GalileoFunctions.UpdateMap(instance);
+        }
+
+        public GALILEO_RETURN_CODE StartChargeLocal()
+        {
+            return GalileoFunctions.StartChargeLocal(instance);
+        }
+
+        public GALILEO_RETURN_CODE StopChargeLocal()
+        {
+            return GalileoFunctions.stopChargeLocal(instance);
+        }
+
+        public GALILEO_RETURN_CODE SaveChargeBasePosition()
+        {
+            return GalileoFunctions.SaveChargeBasePosition(instance);
+        }
+
+        public GALILEO_RETURN_CODE StartCharge(float x, float y)
+        {
+            return GalileoFunctions.StartCharge(instance, x, y);
+        }
+
+        public GALILEO_RETURN_CODE StopCharge()
+        {
+            return GalileoFunctions.StopCharge(instance);
+        }
+
+        public GALILEO_RETURN_CODE MoveTo(float x, float y, ref byte goalNum)
+        {
+            return GalileoFunctions.MoveTo(instance, x, y, ref goalNum);
+        }
+
+        public GALILEO_RETURN_CODE GetGoalNum(ref byte goalNum)
+        {
+            return GalileoFunctions.GetGoalNum(instance, ref goalNum);
+        }
+
+        public GalileoStatus GetCurrentStatus()
+        {
+            byte[] currentStatus = new byte[1024 * 1024];
+            long length = 0;
+            GalileoFunctions.GetCurrentStatus(instance, currentStatus, ref length);
+            string currentStatusJsonString = Encoding.UTF8.GetString(currentStatus, 0, (int)length);
+            return JsonConvert.DeserializeObject<GalileoStatus>(currentStatusJsonString);
+        }
+
+        public void SetCurrentStatusCallback(StatusUpdatedDelegate statusCB)
+        {
+            GalileoFunctions.SetCurrentStatusCallback(instance, statusCB);
+        }
+
+        public void SetGoalReachedCallback(GoalReachedDelegate goalCB)
+        {
+            GalileoFunctions.SetGoalReachedCallback(instance, goalCB);
+        }
+
+        public void WaitForGoal(byte goalIndex)
+        {
+            GalileoFunctions.WaitForGoal(instance, goalIndex);
+        }
+
+
+    }
+}
