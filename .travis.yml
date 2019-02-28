@@ -9,7 +9,7 @@ matrix:
       mono: none
       env: DOTNETCORE=2
       script:
-        - dotnet restore
+        - dotnet msbuild /p:Configuration=Debug /p:DefineConstants=POSIX SharpGalileo.sln
     - name: Mono Build Test
       mono: latest
         

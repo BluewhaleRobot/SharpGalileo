@@ -1,4 +1,4 @@
-# SharpGalileo
+# SharpGalileo [![Build Status](https://travis-ci.org/BluewhaleRobot/SharpGalileo.svg)](https://travis-ci.org/BluewhaleRobot/SharpGalileo)
 
 Galileo navigation C# SDK
 
@@ -10,7 +10,7 @@ Galileo navigation C# SDK
 git clone https://github.com/bluewhalerobot/SharpGalileo
 ```
 
-将SharpGalileo项目添加到自己的项目依赖中。对于Windows用户请到[这里](https://github.com/BluewhaleRobot/GalileoSDK/releases)下载GalileoSDK.dll，并放置到项目的项目文件生成目录。对于Linux用户，请参照[这里](https://github.com/BluewhaleRobot/GalileoSDK)安装GalileoSDK。然后将SharpGalileo项目添加到自己项目的依赖中。
+将SharpGalileo项目添加到自己的项目依赖中。对于Windows用户请到[这里](https://github.com/BluewhaleRobot/GalileoSDK/releases)下载GalileoSDK.dll，并放置到项目的项目文件生成目录。对于Linux用户，请参照[这里](https://github.com/BluewhaleRobot/GalileoSDK)安装GalileoSDK。
 
 ## 使用例子
 
