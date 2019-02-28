@@ -8,6 +8,8 @@ matrix:
       dotnet: 2.1.502
       mono: none
       env: DOTNETCORE=2
+      script:
+        - dotnet restore
     - name: Mono Build Test
       mono: latest
         
