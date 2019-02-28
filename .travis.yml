@@ -1,0 +1,13 @@
+language: csharp
+solution: SharpGalileo.sln
+git:
+  depth: 1
+matrix:
+  include:
+    - name: Dotnet Build Test
+      dotnet: 2.1.502
+      mono: none
+      env: DOTNETCORE=2
+    - name: Mono Build Test
+      mono: latest
+        

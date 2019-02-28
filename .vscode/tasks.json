@@ -1,0 +1,30 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "msbuild",
+                "/p:Configuration=Debug",
+                "/p:DefineConstants=POSIX",
+                "${workspaceFolder}/SharpGalileo.sln"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "release",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "msbuild",
+                "/p:Configuration=Release",
+                "/p:DefineConstants=POSIX",
+                "${workspaceFolder}/SharpGalileo.sln"
+            ],
+            "problemMatcher": "$msCompile"
+        }
+
+    ]
+}

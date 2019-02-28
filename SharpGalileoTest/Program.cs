@@ -333,7 +333,7 @@ namespace SharpGalileoTest
 
         static void Main(string[] args)
         {
-            testGoals();
+            testGetServersOnline();
             while (true)
             {
                 Thread.Sleep(1000);
