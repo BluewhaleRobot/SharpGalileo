@@ -62,6 +62,33 @@ namespace SharpGalileo
             return GalileoFunctions.Connect(instance, Encoding.ASCII.GetBytes(targetID), targetIDBytes.Length, autoConnect, timeout, onConnectCB, onDisconnectCB);
         }
 
+        public GALILEO_RETURN_CODE ConnectIOT(string targetID, int timeout, string password, Action<GALILEO_RETURN_CODE, String> onConnect = null, Action<GALILEO_RETURN_CODE, String> onDisconnect = null)
+        {
+            byte[] targetIDBytes = Encoding.ASCII.GetBytes(targetID);
+            byte[] passwordBytes = Encoding.ASCII.GetBytes(password);
+            OnConnectDelegate onConnectCB = null;
+            OnDisconnectDelegate onDisconnectCB = null;
+            if (onConnect != null)
+            {
+                onConnectCB = (status, id, length) =>
+                {
+                    byte[] result = new byte[length];
+                    Marshal.Copy(id, result, 0, length);
+                    onConnect?.Invoke(status, Encoding.ASCII.GetString(result, 0, length));
+                };
+            }
+            if (onDisconnect != null)
+            {
+                onDisconnectCB = (status, id, length) =>
+                {
+                    byte[] result = new byte[length];
+                    Marshal.Copy(id, result, 0, length);
+                    onDisconnect?.Invoke(status, Encoding.ASCII.GetString(result, 0, length));
+                };
+            }
+            return GalileoFunctions.ConnectIOT(instance, targetIDBytes, targetIDBytes.Length, timeout, passwordBytes, passwordBytes.Length, onConnectCB, onDisconnectCB);
+        }
+
         public List<ServerInfo> GetServersOnline()
         {
             byte[] servers = new byte[1024 * 1024];
@@ -246,6 +273,16 @@ namespace SharpGalileo
             GalileoFunctions.WaitForGoal(instance, goalIndex);
         }
 
+        public GALILEO_RETURN_CODE SendAudio(string audio)
+        {
+            var audioBytes = Encoding.UTF8.GetBytes(audio);
+            return GalileoFunctions.SendAudio(instance, audioBytes, audioBytes.Length);
+        }
 
+        public GALILEO_RETURN_CODE CheckServerOnline(string targetID)
+        {
+            var targetIDBytes = Encoding.UTF8.GetBytes(targetID);
+            return GalileoFunctions.CheckServerOnline(instance, targetIDBytes, targetIDBytes.Length);
+        }
     }
 }

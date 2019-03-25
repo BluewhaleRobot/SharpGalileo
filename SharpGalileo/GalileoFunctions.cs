@@ -38,6 +38,9 @@ namespace SharpGalileo
         [DllImport(dll, CallingConvention = CallingConvention.Cdecl, EntryPoint = "Connect")]
         internal static extern GALILEO_RETURN_CODE Connect(IntPtr sdk, byte[] targetID, long length, bool auto_connect, int timeout, OnConnectDelegate onConnect, OnDisconnectDelegate OnDisconnect);
 
+        [DllImport(dll, CallingConvention = CallingConvention.Cdecl, EntryPoint = "ConnectIOT")]
+        internal static extern GALILEO_RETURN_CODE ConnectIOT(IntPtr sdk, byte[] targetID, long length, int timeout, byte[] password, long passLength, OnConnectDelegate onConnect, OnDisconnectDelegate OnDisconnect);
+
         [DllImport(dll, CallingConvention = CallingConvention.Cdecl, EntryPoint = "GetServersOnline")]
         internal static extern void GetServersOnline(IntPtr sdk, byte[] servers, ref long length);
 
@@ -140,6 +143,10 @@ namespace SharpGalileo
         [DllImport(dll, CallingConvention = CallingConvention.Cdecl, EntryPoint = "WaitForGoal")]
         internal static extern GALILEO_RETURN_CODE WaitForGoal(IntPtr sdk, byte goalID);
 
+        [DllImport(dll, CallingConvention = CallingConvention.Cdecl, EntryPoint = "SendAudio")]
+        internal static extern GALILEO_RETURN_CODE SendAudio(IntPtr sdk, byte[] audio, long length);
 
+        [DllImport(dll, CallingConvention = CallingConvention.Cdecl, EntryPoint = "CheckServerOnline")]
+        internal static extern GALILEO_RETURN_CODE CheckServerOnline(IntPtr sdk, byte[] targetID, long length);
     }
 }

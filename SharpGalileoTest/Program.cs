@@ -331,9 +331,29 @@ namespace SharpGalileoTest
             }
         }
 
+        static void testAudioIOT()
+        {
+            GalileoSDK sdk = new GalileoSDK();
+            sdk.ConnectIOT("71329A5B0F2D68364BB7B44F3F125531E4C7F5BC3BCE2694DFE39B505FF9C730A614FF2790C1", 10000, "xiaoqiang", null, null);
+            while (true)
+            {
+                var res = sdk.SendAudio("测试");
+                if (res == GALILEO_RETURN_CODE.OK)
+                {
+                    Console.WriteLine("Send audio message succeed");
+                }
+                else
+                {
+                    Console.WriteLine("Send audio message failed");
+                }
+
+                Thread.Sleep(4000);
+            }
+        }
+
         static void Main(string[] args)
         {
-            testGetServersOnline();
+            testAudioIOT();
             while (true)
             {
                 Thread.Sleep(1000);
