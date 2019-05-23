@@ -95,6 +95,8 @@ namespace SharpGalileo
             long length = 0;
             GalileoFunctions.GetServersOnline(instance, servers, ref length);
             string serversJsonString = Encoding.UTF8.GetString(servers, 0, (int)length);
+            if (serversJsonString == "null")
+                return new List<ServerInfo>();
             JArray serversJson = JArray.Parse(serversJsonString);
             List<ServerInfo> serversObj = new List<ServerInfo>(); ;
             foreach (var server in serversJson)
@@ -277,6 +279,15 @@ namespace SharpGalileo
         {
             var audioBytes = Encoding.UTF8.GetBytes(audio);
             return GalileoFunctions.SendAudio(instance, audioBytes, audioBytes.Length);
+        }
+
+        public GALILEO_RETURN_CODE SendRawAudio(byte[] data) {
+            return GalileoFunctions.SendRawAudio(instance, data, data.Length);
+        }
+
+        public GALILEO_RETURN_CODE EnableGreeting(bool flag)
+        {
+            return GalileoFunctions.EnableGreeting(instance, flag);
         }
 
         public GALILEO_RETURN_CODE CheckServerOnline(string targetID)

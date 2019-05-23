@@ -20,6 +20,7 @@ namespace SharpGalileo
         SERVER_ERROR,
         GOAL_CANCELLED,
         INVALIDE_GOAL,
+        INVALIDE_PARAMS
     };
 
     internal static class GalileoFunctions
@@ -145,6 +146,12 @@ namespace SharpGalileo
 
         [DllImport(dll, CallingConvention = CallingConvention.Cdecl, EntryPoint = "SendAudio")]
         internal static extern GALILEO_RETURN_CODE SendAudio(IntPtr sdk, byte[] audio, long length);
+
+        [DllImport(dll, CallingConvention = CallingConvention.Cdecl, EntryPoint = "SendRawAudio")]
+        internal static extern GALILEO_RETURN_CODE SendRawAudio(IntPtr sdk, byte[] audio, long length);
+
+        [DllImport(dll, CallingConvention = CallingConvention.Cdecl, EntryPoint = "EnableGreeting")]
+        internal static extern GALILEO_RETURN_CODE EnableGreeting(IntPtr sdk, bool flag);
 
         [DllImport(dll, CallingConvention = CallingConvention.Cdecl, EntryPoint = "CheckServerOnline")]
         internal static extern GALILEO_RETURN_CODE CheckServerOnline(IntPtr sdk, byte[] targetID, long length);

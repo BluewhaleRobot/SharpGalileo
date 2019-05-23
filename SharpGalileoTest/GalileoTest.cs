@@ -1,15 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SharpGalileo;
 using SharpGalileo.models;
 
 namespace SharpGalileoTest
 {
-    class Program
+    [TestClass]
+    public class GalileoTest
     {
 
-        static void testConnectWithCallback() {
+        [TestMethod]
+        void testConnectWithCallback()
+        {
             GalileoSDK sdk = new GalileoSDK();
             sdk.Connect("", true, 10000, (status, targetID) =>
             {
@@ -23,28 +27,32 @@ namespace SharpGalileoTest
             });
         }
 
-        static void testGetServersOnline() {
+        [TestMethod]
+        public void testGetServersOnline()
+        {
             GalileoSDK sdk = new GalileoSDK();
-            while (true) {
-                List<ServerInfo> servers = sdk.GetServersOnline();
-                foreach (var server in servers) {
-                    Console.WriteLine("server: " + server.ID);
-                }
-                Thread.Sleep(1000);
+            List<ServerInfo> servers = sdk.GetServersOnline();
+            foreach (var server in servers)
+            {
+                Console.WriteLine("server: " + server.ID);
             }
+            Thread.Sleep(3000);
+            servers = sdk.GetServersOnline();
+            Assert.AreNotEqual(servers.Count, 0);
         }
 
-        static void testPub()
+        [TestMethod]
+        void testPub()
         {
             GalileoSDK sdk = new GalileoSDK();
             while (true)
             {
                 var servers = sdk.GetServersOnline();
-                if(servers.Count == 0)
+                if (servers.Count == 0)
                 {
                     Console.WriteLine("No server found");
                 }
-                foreach(var server in servers)
+                foreach (var server in servers)
                 {
                     Console.WriteLine("Connect to " + server.ID);
                 }
@@ -55,7 +63,8 @@ namespace SharpGalileoTest
             }
         }
 
-        static void testSub()
+        [TestMethod]
+        void testSub()
         {
             GalileoSDK sdk = new GalileoSDK();
             sdk.Connect("", true, 10000, null, null);
@@ -66,20 +75,23 @@ namespace SharpGalileoTest
                 Thread.Sleep(1000);
             }
         }
-        
+
         static bool connectCallbackFlag = false;
         static bool connected = false;
-        static void testReconnect() {
+
+        [TestMethod]
+        void testReconnect()
+        {
             GalileoSDK sdk = new GalileoSDK();
             while (true)
             {
                 if (!connected)
                 {
-                    sdk.Connect("", true, 10000, (status, id)=> {
+                    sdk.Connect("", true, 10000, (status, id) => {
                         Console.WriteLine("OnConnect Callback: result " + status);
                         Console.WriteLine("OnConnect Callback: connected to " + id);
                         connectCallbackFlag = true;
-                        if(status == GALILEO_RETURN_CODE.OK)
+                        if (status == GALILEO_RETURN_CODE.OK)
                         {
                             connected = true;
                         }
@@ -99,7 +111,8 @@ namespace SharpGalileoTest
             }
         }
 
-        static void testSendGalileoCmd()
+        [TestMethod]
+        void testSendGalileoCmd()
         {
             GalileoSDK sdk = new GalileoSDK();
             if (sdk.Connect("71329A5B0F2D68364BB7B44F3F125531E4C7F5BC3BCE2694DFE39B505FF9C730A614FF2790C1",
@@ -115,7 +128,8 @@ namespace SharpGalileoTest
             }
         }
 
-        static void testStartNav()
+        [TestMethod]
+        void testStartNav()
         {
             GalileoSDK sdk = new GalileoSDK();
             if (sdk.Connect("71329A5B0F2D68364BB7B44F3F125531E4C7F5BC3BCE2694DFE39B505FF9C730A614FF2790C1",
@@ -141,7 +155,8 @@ namespace SharpGalileoTest
             }
         }
 
-        static void testSetSpeed()
+        [TestMethod]
+        void testSetSpeed()
         {
             GalileoSDK sdk = new GalileoSDK();
             if (sdk.Connect("71329A5B0F2D68364BB7B44F3F125531E4C7F5BC3BCE2694DFE39B505FF9C730A614FF2790C1",
@@ -185,12 +200,14 @@ namespace SharpGalileoTest
             }
         }
 
+        [TestMethod]
         static void testSetAngle()
         {
 
         }
 
-        static void testGoals()
+        [TestMethod]
+        void testGoals()
         {
             GalileoSDK sdk = new GalileoSDK();
             if (sdk.Connect("71329A5B0F2D68364BB7B44F3F125531E4C7F5BC3BCE2694DFE39B505FF9C730A614FF2790C1",
@@ -203,7 +220,7 @@ namespace SharpGalileoTest
             {
                 sdk.StartNav();
                 GalileoStatus status = sdk.GetCurrentStatus();
-                while(status.visualStatus != 1 || status.navStatus != 1)
+                while (status.visualStatus != 1 || status.navStatus != 1)
                 {
                     Console.WriteLine("Wait for navigation initialization");
                     Console.WriteLine("status.visualStatus: " + status.visualStatus);
@@ -215,7 +232,7 @@ namespace SharpGalileoTest
                 sdk.SetGoal(0);
                 // 等待goal status
                 status = sdk.GetCurrentStatus();
-                while(status.targetStatus != 1)
+                while (status.targetStatus != 1)
                 {
                     Console.WriteLine("Wait for goal start");
                     status = sdk.GetCurrentStatus();
@@ -238,7 +255,7 @@ namespace SharpGalileoTest
                 Thread.Sleep(2 * 1000);
                 sdk.ResumeGoal();
                 status = sdk.GetCurrentStatus();
-                while(status.targetStatus != 1)
+                while (status.targetStatus != 1)
                 {
                     Console.WriteLine("Wait for goal resume");
                     status = sdk.GetCurrentStatus();
@@ -249,7 +266,7 @@ namespace SharpGalileoTest
                 Thread.Sleep(2 * 1000);
                 sdk.CancelGoal();
                 status = sdk.GetCurrentStatus();
-                while(status.targetStatus != 0 || status.targetNumID != -1)
+                while (status.targetStatus != 0 || status.targetNumID != -1)
                 {
                     Console.WriteLine("Wait for goal cancel");
                     status = sdk.GetCurrentStatus();
@@ -293,7 +310,7 @@ namespace SharpGalileoTest
                     Thread.Sleep(1000);
                 }
                 Console.WriteLine("Goal started");
-                while(status.targetStatus != 0 || status.targetNumID != 1)
+                while (status.targetStatus != 0 || status.targetNumID != 1)
                 {
                     Console.WriteLine("Wait for goal complete");
                     status = sdk.GetCurrentStatus();
@@ -309,14 +326,14 @@ namespace SharpGalileoTest
                 sdk.MoveTo((pos0_x + pos1_x) / 2, (pos0_y + pos1_y) / 2, ref goalNum);
                 // 等待移动完成
                 status = sdk.GetCurrentStatus();
-                while(status.targetStatus != 1)
+                while (status.targetStatus != 1)
                 {
                     Console.WriteLine("Wait for goal start");
                     status = sdk.GetCurrentStatus();
                     Thread.Sleep(1000);
                 }
                 Console.WriteLine("Goal started");
-                while(status.targetStatus != 0 || status.targetNumID != goalNum)
+                while (status.targetStatus != 0 || status.targetNumID != goalNum)
                 {
                     Console.WriteLine("Wait for goal complete");
                     Console.WriteLine("status.targetStatus: " + status.targetStatus);
@@ -331,7 +348,8 @@ namespace SharpGalileoTest
             }
         }
 
-        static void testAudioIOT()
+        [TestMethod]
+        void testAudioIOT()
         {
             GalileoSDK sdk = new GalileoSDK();
             sdk.ConnectIOT("71329A5B0F2D68364BB7B44F3F125531E4C7F5BC3BCE2694DFE39B505FF9C730A614FF2790C1", 10000, "xiaoqiang", null, null);
@@ -350,14 +368,6 @@ namespace SharpGalileoTest
                 Thread.Sleep(4000);
             }
         }
-
-        static void Main(string[] args)
-        {
-            testAudioIOT();
-            while (true)
-            {
-                Thread.Sleep(1000);
-            }
-        }
     }
 }
+
