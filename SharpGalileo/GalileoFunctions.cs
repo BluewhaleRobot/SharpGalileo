@@ -36,6 +36,9 @@ namespace SharpGalileo
         [DllImport(dll, CallingConvention = CallingConvention.Cdecl, EntryPoint = "ReleaseInstance")]
         internal static extern void ReleaseInstance(IntPtr sdk);
 
+        [DllImport(dll, CallingConvention = CallingConvention.Cdecl, EntryPoint = "Dispose")]
+        internal static extern void Dispose(IntPtr sdk);
+
         [DllImport(dll, CallingConvention = CallingConvention.Cdecl, EntryPoint = "Connect")]
         internal static extern GALILEO_RETURN_CODE Connect(IntPtr sdk, byte[] targetID, long length, bool auto_connect, int timeout, OnConnectDelegate onConnect, OnDisconnectDelegate OnDisconnect);
 

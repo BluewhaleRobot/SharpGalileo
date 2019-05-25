@@ -12,31 +12,35 @@ namespace SharpGalileo
     public class GalileoSDK : IDisposable
     {
         private IntPtr instance;
+<<<<<<< Updated upstream
         private bool _disposed = false;
         OnConnectDelegate onConnectCB = null;
         OnDisconnectDelegate onDisconnectCB = null;
+=======
+>>>>>>> Stashed changes
 
         public GalileoSDK()
         {
             instance = GalileoFunctions.CreateInstance();
         }
+
+        ~GalileoSDK()
+        {
+            Release();
+        }
         
         public void Dispose()
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
+            if (instance != null)
+                GalileoFunctions.Dispose(instance);
         }
 
-        private void Dispose(bool disposing)
+        public void Release()
         {
-            if (_disposed)
-                return;
-
             if (instance != null)
                 GalileoFunctions.ReleaseInstance(instance);
-
-            _disposed = true;
         }
+
 
         public GALILEO_RETURN_CODE Connect(String targetID, bool autoConnect, int timeout, Action<GALILEO_RETURN_CODE, String> onConnect = null, Action<GALILEO_RETURN_CODE, String> onDisconnect = null)
         {
