@@ -12,12 +12,8 @@ namespace SharpGalileo
     public class GalileoSDK : IDisposable
     {
         private IntPtr instance;
-<<<<<<< Updated upstream
-        private bool _disposed = false;
         OnConnectDelegate onConnectCB = null;
         OnDisconnectDelegate onDisconnectCB = null;
-=======
->>>>>>> Stashed changes
 
         public GalileoSDK()
         {
