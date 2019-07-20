@@ -1,4 +1,6 @@
 ﻿using SharpGalileo;
+using SharpGalileo.models;
+using SharpGalileoTest;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,33 +12,28 @@ namespace SharpGalileoTestApp
 {
     class Program
     {
-        static void Main(string[] args)
+
+        public static void testKeepConnection()
         {
             GalileoSDK sdk = new GalileoSDK();
-            bool cbFlag = false;
-            sdk.Connect("F9DF41E6CA1C41CD8ECB510C3EF84A4472191922695EBA5A7514D459FC919608A2EF4FB50622", true, 10000, (status, targetID) =>
-            {
-                Console.WriteLine("Server connected");
-                Console.WriteLine(targetID);
-                Console.WriteLine("status: " + status);
-                cbFlag = true;
-            }, (status, targetID) =>
-            {
-                Console.WriteLine("Server disconnected");
-                Console.WriteLine(targetID);
-                cbFlag = true;
-            });
-            while (!cbFlag)
-                Thread.Sleep(1000);
-            sdk.SetCurrentStatusCallback((status) => {
-                Console.WriteLine(status.power);
-            });
+            sdk.Connect("8FB56D27D6C961E9036F62182ADE9544D71E23C31E5DF4C7DD692B9E4296A131434B1066D365", true, 10000, null, null);
+            sdk.KeepConnection(true);
             int count = 0;
-            while (count < 10)
+            while (count < 60)
             {
-                count++;
+                GalileoStatus status = sdk.GetCurrentStatus();
+                if (status != null)
+                    Console.WriteLine("Power: " + status.power);
+                else
+                    Console.WriteLine("Get power failed");
                 Thread.Sleep(1000);
+                count += 1;
             }
+        }
+
+        static void Main(string[] args)
+        {
+            testKeepConnection();
         }
     }
 }

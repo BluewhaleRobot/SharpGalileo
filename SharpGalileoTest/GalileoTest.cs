@@ -373,6 +373,22 @@ namespace SharpGalileoTest
                 Thread.Sleep(4000);
             }
         }
+
+        [TestMethod]
+        public void testKeepConnection() {
+            GalileoSDK sdk = new GalileoSDK();
+            sdk.Connect("8FB56D27D6C961E9036F62182ADE9544D71E23C31E5DF4C7DD692B9E4296A131434B1066D365",true, 10000, null, null);
+            int count = 0;
+            while (count < 30) {
+                GalileoStatus status = sdk.GetCurrentStatus();
+                if (status != null)
+                    Console.WriteLine("Power: " + status.power);
+                else
+                    Console.WriteLine("Get power failed");
+                Thread.Sleep(1000);
+                count += 1;
+            }
+        }
     }
 }
 

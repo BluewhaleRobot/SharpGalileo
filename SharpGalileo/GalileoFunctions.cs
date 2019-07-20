@@ -45,6 +45,15 @@ namespace SharpGalileo
         [DllImport(dll, CallingConvention = CallingConvention.Cdecl, EntryPoint = "ConnectIOT")]
         internal static extern GALILEO_RETURN_CODE ConnectIOT(IntPtr sdk, byte[] targetID, long length, int timeout, byte[] password, long passLength, OnConnectDelegate onConnect, OnDisconnectDelegate OnDisconnect);
 
+        [DllImport(dll, CallingConvention = CallingConvention.Cdecl, EntryPoint = "Disconnect")]
+        internal static extern void Disconnect(IntPtr sdk);
+
+        [DllImport(dll, CallingConvention = CallingConvention.Cdecl, EntryPoint = "KeepConnection")]
+        internal static extern GALILEO_RETURN_CODE KeepConnection(IntPtr sdk, bool flag, int maxRetry);
+
+        [DllImport(dll, CallingConvention = CallingConvention.Cdecl, EntryPoint = "GetRetryCount")]
+        internal static extern int GetRetryCount(IntPtr sdk);
+
         [DllImport(dll, CallingConvention = CallingConvention.Cdecl, EntryPoint = "GetServersOnline")]
         internal static extern void GetServersOnline(IntPtr sdk, byte[] servers, ref long length);
 
@@ -158,5 +167,8 @@ namespace SharpGalileo
 
         [DllImport(dll, CallingConvention = CallingConvention.Cdecl, EntryPoint = "CheckServerOnline")]
         internal static extern GALILEO_RETURN_CODE CheckServerOnline(IntPtr sdk, byte[] targetID, long length);
+
+        [DllImport(dll, CallingConvention = CallingConvention.Cdecl, EntryPoint = "IsConnecting")]
+        internal static extern bool IsConnecting(IntPtr sdk);
     }
 }

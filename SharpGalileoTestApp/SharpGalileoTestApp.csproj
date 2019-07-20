@@ -8,10 +8,11 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>SharpGalileoTestApp</RootNamespace>
     <AssemblyName>SharpGalileoTestApp</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>x64</PlatformTarget>
@@ -54,6 +55,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\SharpGalileoTest\SharpGalileoTest.csproj">
+      <Project>{46452e3b-5caf-41e3-b76c-d0484e6daf35}</Project>
+      <Name>SharpGalileoTest</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SharpGalileo\SharpGalileo.csproj">
       <Project>{4842cc2d-dcff-44fd-a531-fe4b7ebb9853}</Project>
       <Name>SharpGalileo</Name>

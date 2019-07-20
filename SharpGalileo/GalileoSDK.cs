@@ -89,6 +89,19 @@ namespace SharpGalileo
             return GalileoFunctions.ConnectIOT(instance, targetIDBytes, targetIDBytes.Length, timeout, passwordBytes, passwordBytes.Length, onConnectCB, onDisconnectCB);
         }
 
+        public void Disconnect() {
+            GalileoFunctions.Disconnect(instance);
+        }
+
+        public GALILEO_RETURN_CODE KeepConnection(bool flag, int maxRetry = 20)
+        {
+            return GalileoFunctions.KeepConnection(instance, flag, maxRetry);
+        }
+
+        public int GetRetryCount() {
+            return GalileoFunctions.GetRetryCount(instance);
+        }
+
         public List<ServerInfo> GetServersOnline()
         {
             byte[] servers = new byte[1024 * 1024];
@@ -304,6 +317,11 @@ namespace SharpGalileo
         {
             var targetIDBytes = Encoding.UTF8.GetBytes(targetID);
             return GalileoFunctions.CheckServerOnline(instance, targetIDBytes, targetIDBytes.Length);
+        }
+
+        public bool IsConnecting()
+        {
+            return GalileoFunctions.IsConnecting(instance);
         }
     }
 }
