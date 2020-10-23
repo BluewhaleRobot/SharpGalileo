@@ -14,6 +14,8 @@ namespace SharpGalileo
         private IntPtr instance;
         OnConnectDelegate onConnectCB = null;
         OnDisconnectDelegate onDisconnectCB = null;
+        StatusUpdatedDelegate onStatusUpdateCB = null;
+        GoalReachedDelegate onGoalReachedCB = null;
 
         public GalileoSDK()
         {
@@ -268,29 +270,34 @@ namespace SharpGalileo
         {
             byte[] currentStatus = new byte[1024 * 1024];
             long length = 0;
-            GalileoFunctions.GetCurrentStatus(instance, currentStatus, ref length);
+            if(GalileoFunctions.GetCurrentStatus(instance, currentStatus, ref length) != GALILEO_RETURN_CODE.OK)
+            {
+                return null;
+            }
             string currentStatusJsonString = Encoding.UTF8.GetString(currentStatus, 0, (int)length);
             return JsonConvert.DeserializeObject<GalileoStatus>(currentStatusJsonString);
         }
 
         public void SetCurrentStatusCallback(Action<GalileoStatus> statusCB = null)
         {
-            GalileoFunctions.SetCurrentStatusCallback(instance, (status, statusJson, length)=> {
+            onStatusUpdateCB = (status, statusJson, length) => {
                 byte[] result = new byte[length];
                 Marshal.Copy(statusJson, result, 0, (int)length);
                 var statusStr = Encoding.ASCII.GetString(result, 0, (int)length);
                 statusCB?.Invoke(JsonConvert.DeserializeObject<GalileoStatus>(statusStr));
-            });
+            };
+            GalileoFunctions.SetCurrentStatusCallback(instance, onStatusUpdateCB);
         }
 
         public void SetGoalReachedCallback(Action<int, GalileoStatus> goalCB)
         {
-            GalileoFunctions.SetGoalReachedCallback(instance, (goalid, statusJson, length) =>{
+            onGoalReachedCB = (goalid, statusJson, length) => {
                 byte[] result = new byte[length];
                 Marshal.Copy(statusJson, result, 0, (int)length);
                 var statusStr = Encoding.ASCII.GetString(result, 0, (int)length);
                 goalCB?.Invoke(goalid, JsonConvert.DeserializeObject<GalileoStatus>(statusStr));
-            });
+            };
+            GalileoFunctions.SetGoalReachedCallback(instance, onGoalReachedCB);
         }
 
         public void WaitForGoal(byte goalIndex)
