@@ -170,5 +170,11 @@ namespace SharpGalileo
 
         [DllImport(dll, CallingConvention = CallingConvention.Cdecl, EntryPoint = "IsConnecting")]
         internal static extern bool IsConnecting(IntPtr sdk);
+
+        [DllImport(dll, CallingConvention = CallingConvention.Cdecl, EntryPoint = "SendGalileoBridgeRequest")]
+        internal static extern GALILEO_RETURN_CODE SendGalileoBridgeRequest(IntPtr sdk, byte[] method, long length1,
+            byte[] url, long length2,
+            byte[] body, long length3,
+            byte[] response, ref long length4, int timeout);
     }
 }

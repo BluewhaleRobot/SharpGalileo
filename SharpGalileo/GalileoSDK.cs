@@ -330,5 +330,23 @@ namespace SharpGalileo
         {
             return GalileoFunctions.IsConnecting(instance);
         }
+
+        public GALILEO_RETURN_CODE SendGalileoBridgeRequest(string method, string url, string body, ref HttpBridgeResponse response, int timeout=10 * 1000)
+        {
+            var methodBytes = Encoding.UTF8.GetBytes(method);
+            var urlBytes = Encoding.UTF8.GetBytes(url);
+            var bodyBytes = Encoding.UTF8.GetBytes(body);
+            byte[] responseBytes = new byte[1024 * 1024];
+            long length = 0;
+            var status = GalileoFunctions.SendGalileoBridgeRequest(instance, methodBytes, methodBytes.Length,
+                urlBytes, urlBytes.Length,
+                bodyBytes, bodyBytes.Length,
+                responseBytes, ref length, timeout);
+            if (status != GALILEO_RETURN_CODE.OK)
+                return status;
+            string responseStr = Encoding.UTF8.GetString(responseBytes, 0, (int)length);
+            response = JsonConvert.DeserializeObject<HttpBridgeResponse>(responseStr);
+            return status;
+        }
     }
 }
